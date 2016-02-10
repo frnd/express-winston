@@ -199,7 +199,8 @@ Browse `/` to see a regular HTTP logging like this:
       },
       "responseTime" : 12,
       "level": "info",
-      "message": "HTTP GET /favicon.ico"
+      "message": "HTTP GET /favicon.ico",
+      "requestId": "d018a4ef-7c30-45cf-8545-62007820f004"
     }
 
 Browse `/error` will show you how express-winston handles and logs the errors in the express pipeline like this:
@@ -274,7 +275,8 @@ Browse `/error` will show you how express-winston handles and logs the errors in
         "query": {}
       },
       "level": "error",
-      "message": "middlewareError"
+      "message": "middlewareError",
+      "requestId": "d018a4ef-7c30-45cf-8545-62007820f004"
     }
 
 ## Global Whitelists and Blacklists
@@ -348,7 +350,8 @@ Post to `/user/register` would give you something like the following:
       },
       "responseTime" : 12,
       "level": "info",
-      "message": "HTTP GET /favicon.ico"
+      "message": "HTTP GET /favicon.ico",
+      "requestId": "d018a4ef-7c30-45cf-8545-62007820f004"
     }
 
 Blacklisting supports only the `body` property.
@@ -365,6 +368,20 @@ Blacklisting supports only the `body` property.
 If both `req._bodyWhitelist.body` and `req._bodyBlacklist.body` are set the result will be the white listed properties
 excluding any black listed ones. In the above example, only 'email' and 'age' would be included.
 
+## Tracing log messages with an UUID
+
+The express request object have a logger you can use like a winston logger:
+
+```js
+exports.controller = function(req, res) {
+    [...]
+    req._logger.info('Doing something');
+    [...]
+}
+```
+Logger will add a unique id per request to the log message metadata so you can trace all log messages that belongs 
+to the same reques. Additionally, the response will have also a header 'X-Request-Id' so trazability can be made also
+in the client.
 
 ## Tests
 
